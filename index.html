@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hivanix.in - UPI QR Generator</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f1f8e9 0%, #f0f4c3 25%, #e8f5e9 50%, #f1f8e9 75%, #f9fbe7 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Animated Background Elements */
+        .bg-elements {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .glass-bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            animation: float 25s infinite ease-in-out;
+        }
+
+        .glass-bubble:nth-child(1) {
+            width: 150px;
+            height: 150px;
+            left: 10%;
+            top: 20%;
+            animation-delay: 0s;
+        }
+
+        .glass-bubble:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            right: 15%;
+            top: 50%;
+            animation-delay: 5s;
+        }
+
+        .glass-bubble:nth-child(3) {
+            width: 120px;
+            height: 120px;
+            left: 80%;
+            bottom: 20%;
+            animation-delay: 10s;
+        }
+
+        .glass-bubble:nth-child(4) {
+            width: 180px;
+            height: 180px;
+            left: 40%;
+            bottom: 30%;
+            animation-delay: 15s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            25% { transform: translateY(-30px) rotate(90deg) scale(1.05); }
+            50% { transform: translateY(20px) rotate(180deg) scale(0.95); }
+            75% { transform: translateY(-20px) rotate(270deg) scale(1.02); }
+        }
+
+        .gradient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.2;
+            animation: pulse 15s infinite ease-in-out;
+        }
+
+        .orb1 {
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, #81c784, #a5d6a7);
+            top: -250px;
+            left: -250px;
+        }
+
+        .orb2 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #66bb6a, #81c784);
+            bottom: -200px;
+            right: -200px;
+            animation-delay: -7s;
+        }
+
+        .orb3 {
+            width: 350px;
+            height: 350px;
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -3s;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.2; }
+            50% { transform: scale(1.2); opacity: 0.3; }
+        }
+
+        /* Header with Company Branding */
+        .header {
+            position: relative;
+            z-index: 1;
+            padding: 30px 20px;
+            text-align: center;
+            animation: slideDown 0.8s ease;
+        }
+
+        .company-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .company-name:hover {
+            transform: translateY(-3px);
+            text-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .company-tagline {
+            font-size: 1rem;
+            color: rgba(0, 0, 0, 0.6);
+            margin-bottom: 15px;
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .main-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: stretch;
+        }
+
+        /* Glass Card Style - Equal Height */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 
+                0 8px 32px 0 rgba(31, 38, 135, 0.1),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+            animation: slideUp 0.8s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 12px 40px 0 rgba(31, 38, 135, 0.15),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.6);
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Card Header */
+        .card-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .card-subtitle {
+            color: rgba(0, 0, 0, 0.6);
+            font-size: 0.95rem;
+            font-weight: 400;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: rgba(0, 0, 0, 0.7);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .glass-input {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 12px;
+            color: #333;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .glass-input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.7);
+            border-color: rgba(76, 175, 80, 0.5);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+        .glass-input::placeholder {
+            color: rgba(0, 0, 0, 0.4);
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #4caf50;
+            font-size: 1.1rem;
+            pointer-events: none;
+        }
+
+        /* Payment Type Selector */
+        .payment-type-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .payment-type-btn {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 12px;
+            color: rgba(0, 0, 0, 0.6);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .payment-type-btn:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .payment-type-btn.active {
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        /* Form Sections */
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Autocomplete Dropdown - Fixed z-index */
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 12px;
+            margin-top: 5px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            z-index: 20; /* High z-index to appear above all elements */
+            display: none;
+            max-height: 60px;
+            overflow-y: auto;
+        }
+
+        .autocomplete-dropdown.show {
+            display: block;
+        }
+
+        .autocomplete-item {
+            padding: 12px 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .autocomplete-item:hover {
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .autocomplete-item.selected {
+            background: rgba(76, 175, 80, 0.2);
+        }
+
+        .autocomplete-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        .autocomplete-text {
+            flex: 1;
+        }
+
+        .autocomplete-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .autocomplete-domain {
+            font-size: 0.85rem;
+            color: rgba(0, 0, 0, 0.6);
+        }
+
+        /* Amount Input */
+        .amount-wrapper {
+            position: relative;
+        }
+
+        .currency-badge {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: black;
+        }
+
+        .amount-wrapper .glass-input {
+            padding-left: 55px;
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+            color: white;
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-primary:disabled:hover {
+            transform: none;
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+        }
+
+        /* QR Display */
+        .qr-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .qr-placeholder {
+            text-align: center;
+            opacity: 0.7;
+        }
+
+        .qr-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: rgba(76, 175, 80, 0.7);
+            animation: float-icon 3s ease-in-out infinite;
+        }
+
+        @keyframes float-icon {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .qr-placeholder h3 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .qr-placeholder p {
+            color: rgba(0, 0, 0, 0.5);
+            font-size: 0.9rem;
+        }
+
+        #qrcode {
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            display: none;
+            animation: qrAppear 0.6s ease;
+        }
+
+        @keyframes qrAppear {
+            from { transform: scale(0.8) rotate(180deg); opacity: 0; }
+            to { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        #qrcode.show {
+            display: block;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            width: 100%;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 12px;
+            color: #333;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .action-btn.show {
+            display: flex;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-btn.download {
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+            color: white;
+            border: none;
+        }
+
+        .action-btn.share {
+            background: linear-gradient(135deg, #00897b, #4db6ac);
+            color: white;
+            border: none;
+        }
+
+        /* Loading Animation */
+        .loader {
+            display: none;
+            width: 50px;
+            height: 50px;
+            position: relative;
+        }
+
+        .loader.show {
+            display: block;
+        }
+
+        .loader::before,
+        .loader::after {
+            content: '';
+            position: absolute;
+            border: 3px solid transparent;
+            border-top-color: #4caf50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loader::before {
+            width: 50px;
+            height: 50px;
+            animation-duration: 0.8s;
+        }
+
+        .loader::after {
+            width: 35px;
+            height: 35px;
+            top: 7.5px;
+            left: 7.5px;
+            border-top-color: #66bb6a;
+            animation-direction: reverse;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Success Animation */
+        .success-check {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            display: none;
+        }
+
+        .success-check.show {
+            display: block;
+            animation: successPop 0.5s ease;
+        }
+
+        @keyframes successPop {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .success-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+        }
+
+        /* Particle Effect */
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0;
+            animation: particleFloat 3s ease-out forwards;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--x), var(--y)) scale(1);
+            }
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            padding: 18px 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            animation: slideInRight 0.5s ease;
+            font-weight: 600;
+            color: white;
+            display: none;
+            backdrop-filter: blur(10px);
+        }
+
+        .notification.show {
+            display: block;
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #f44336, #e91e63);
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+        }
+
+        .notification.info {
+            background: linear-gradient(135deg, #00897b, #4db6ac);
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* UPI ID Validation */
+        .validation-hint {
+            font-size: 0.8rem;
+            color: rgba(0, 0, 0, 0.5);
+            margin-top: 5px;
+            display: none;
+        }
+
+        .validation-hint.show {
+            display: block;
+        }
+
+        .validation-hint.error {
+            color: #f44336;
+        }
+
+        .validation-hint.success {
+            color: #4caf50;
+        }
+
+        /* Footer */
+        .footer {
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .footer-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: rgba(0, 0, 0, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .footer-heart {
+            color: #f44336;
+            animation: heartbeat 1.5s ease infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .footer-link {
+            color: #4caf50;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: #66bb6a;
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .main-wrapper {
+                grid-template-columns: 1fr;
+                max-width: 600px;
+            }
+
+            .glass-card {
+                padding: 30px 25px;
+            }
+
+            .card-title {
+                font-size: 1.6rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .payment-type-selector {
+                grid-template-columns: 1fr;
+            }
+
+            .company-name {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .glass-card {
+                padding: 25px 20px;
+            }
+
+            .card-title {
+                font-size: 1.4rem;
+            }
+
+            .company-name {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-elements">
+        <div class="glass-bubble"></div>
+        <div class="glass-bubble"></div>
+        <div class="glass-bubble"></div>
+        <div class="glass-bubble"></div>
+        <div class="gradient-orb orb1"></div>
+        <div class="gradient-orb orb2"></div>
+        <div class="gradient-orb orb3"></div>
+    </div>
+
+    <!-- Header with Company Branding -->
+    <header class="header">
+        <h1 class="company-name" onclick="window.open('https://hivanix.in', '_blank')">Hivanix.in</h1>
+        <p class="company-tagline">UPI QR Generator</p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <div class="main-wrapper">
+            <!-- Left Panel - Form -->
+            <div class="glass-card">
+                <div class="card-header">
+                    <h2 class="card-title">Create QR Code</h2>
+                    <p class="card-subtitle">Select payment type and fill details</p>
+                </div>
+
+                <!-- Payment Type Selector -->
+                <div class="payment-type-selector">
+                    <button class="payment-type-btn active" data-type="upi">
+                        <i class="fas fa-at"></i> UPI ID
+                    </button>
+                    <button class="payment-type-btn" data-type="phone">
+                        <i class="fas fa-phone"></i> Phone
+                    </button>
+                    <button class="payment-type-btn" data-type="bank">
+                        <i class="fas fa-university"></i> Bank Account
+                    </button>
+                    <button class="payment-type-btn" data-type="aadhaar">
+                        <i class="fas fa-id-card"></i> Aadhaar
+                    </button>
+                </div>
+
+                <form id="upiForm">
+                    <!-- UPI ID Section -->
+                    <div class="form-section active" id="upiSection">
+                        <div class="form-group">
+                            <label class="form-label">Merchant / Payee Name</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="merchantName" class="glass-input" placeholder="Enter your business name here..." required>
+                                <i class="fas fa-store input-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">UPI Address</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="upiId" class="glass-input" placeholder="Enter your UPI ID here..." required>
+                                <i class="fas fa-at input-icon"></i>
+                                <div class="autocomplete-dropdown" id="upiAutocomplete"></div>
+                            </div>
+                            <div class="validation-hint" id="validationHint"></div>
+                        </div>
+                    </div>
+
+                    <!-- Phone Section -->
+                    <div class="form-section" id="phoneSection">
+                        <div class="form-group">
+                            <label class="form-label">Merchant / Payee Name</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="phoneMerchantName" class="glass-input" placeholder="Enter your business name here..." required>
+                                <i class="fas fa-store input-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Phone Number</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="phoneNumber" class="glass-input" placeholder="Enter your phone number here..." maxlength="10" required>
+                                <i class="fas fa-phone input-icon"></i>
+                            </div>
+                            <div class="validation-hint" id="phoneValidationHint"></div>
+                        </div>
+                    </div>
+
+                    <!-- Bank Account Section -->
+                    <div class="form-section" id="bankSection">
+                        <div class="form-group">
+                            <label class="form-label">Merchant / Payee Name</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="bankMerchantName" class="glass-input" placeholder="Enter your business name here..." required>
+                                <i class="fas fa-store input-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Bank Account Number</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="bankAccount" class="glass-input" placeholder="Enter your Bank Account Number here..." required>
+                                <i class="fas fa-credit-card input-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">IFSC Code</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="ifscCode" class="glass-input" placeholder="Enter your bank's IFSC Code here..." required>
+                                <i class="fas fa-code-branch input-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Aadhaar Section -->
+                    <div class="form-section" id="aadhaarSection">
+                        <div class="form-group">
+                            <label class="form-label">Merchant / Payee Name</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="aadhaarMerchantName" class="glass-input" placeholder="Enter your business name here..." required>
+                                <i class="fas fa-store input-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Aadhaar Number</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="aadhaarNumber" class="glass-input" placeholder="Enter your Aadhaar Number here..." maxlength="12" required>
+                                <i class="fas fa-id-card input-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Common Fields -->
+                    <div class="form-group">
+                        <label class="form-label">Transaction Amount 🇮🇳</label>
+                        <div class="amount-wrapper">
+                            <span class="currency-badge">₹</span>
+                            <input type="number" id="amount" class="glass-input" placeholder="Enter transaction amount here..." min="0" step="0.01">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Description (Notes)</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="description" class="glass-input" placeholder="Enter transaction description here...">
+                            <i class="fas fa-comment-dots input-icon"></i>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-primary" id="generateBtn">
+                        <i class="fas fa-magic"></i> Generate QR Code
+                    </button>
+                </form>
+            </div>
+
+            <!-- Right Panel - QR Display -->
+            <div class="glass-card">
+                <div class="card-header">
+                    <h2 class="card-title">Your QR Code</h2>
+                    <p class="card-subtitle">Scan or share for payments</p>
+                </div>
+
+                <div class="qr-container">
+                    <div class="qr-placeholder" id="qrPlaceholder">
+                        <div class="qr-icon">
+                            <i class="fas fa-qrcode"></i>
+                        </div>
+                        <h3>Ready to Generate</h3>
+                        <p>Your payment QR will appear here</p>
+                    </div>
+
+                    <div class="loader" id="loader"></div>
+
+                    <div id="qrcode"></div>
+
+                    <div class="success-check" id="successCheck">
+                        <div class="success-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="action-btn download" id="downloadBtn">
+                            <i class="fas fa-download"></i>
+                            <span>Download</span>
+                        </button>
+                        <button class="action-btn share" id="shareBtn">
+                            <i class="fas fa-mobile-alt"></i>
+                            <span>Open on Phone</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <span>Made with</span>
+            <i class="fas fa-heart footer-heart"></i>
+            <span>by</span>
+            <a href="https://hivanix.in" target="_blank" class="footer-link">Hivanix Team</a>
+        </div>
+    </footer>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Initialize variables
+        let qrcode = null;
+        let upiUrl = '';
+        let currentPaymentType = 'upi';
+
+        // UPI providers data
+        const upiProviders = [
+            { name: 'Paytm', domain: 'paytm', color: '#004B8D', icon: 'P' },
+            { name: 'PhonePe', domain: 'ybl', color: '#5E35B1', icon: 'P' },
+            { name: 'Google Pay', domain: 'okicici', color: '#4285F4', icon: 'G' },
+            { name: 'Amazon Pay', domain: 'apl', color: '#FF9900', icon: 'A' },
+            { name: 'BHIM', domain: 'upi', color: '#8A2BE2', icon: 'B' },
+            { name: 'WhatsApp Pay', domain: 'ybl', color: '#25D366', icon: 'W' },
+            { name: 'Freecharge', domain: 'freecharge', color: '#F46F25', icon: 'F' },
+            { name: 'Mobikwik', domain: 'mobikwik', color: '#FDB813', icon: 'M' },
+            { name: 'Airtel Money', domain: 'airtel', color: '#FF0000', icon: 'A' },
+            { name: 'JioMoney', domain: 'jio', color: '#00AEEF', icon: 'J' },
+            { name: 'SBI Pay', domain: 'sbi', color: '#00509E', icon: 'S' },
+            { name: 'HDFC Pay', domain: 'hdfcbank', color: '#004B8D', icon: 'H' },
+            { name: 'ICICI Pay', domain: 'icici', color: '#FF6F00', icon: 'I' },
+            { name: 'Axis Pay', domain: 'axis', color: '#8B1538', icon: 'A' },
+            { name: 'PNB', domain: 'pnb', color: '#006A4E', icon: 'P' },
+            { name: 'BOI', domain: 'boi', color: '#E31937', icon: 'B' },
+            { name: 'Canara Bank', domain: 'canarabank', color: '#009639', icon: 'C' },
+            { name: 'Bank of Baroda', domain: 'bob', color: '#EC1C24', icon: 'B' },
+            { name: 'Union Bank', domain: 'unionbankofindia', color: '#4A90E2', icon: 'U' },
+            { name: 'Kotak', domain: 'kotak', color: '#E31937', icon: 'K' },
+            { name: 'IndusInd', domain: 'indusind', color: '#FF6F00', icon: 'I' },
+            { name: 'RBL Bank', domain: 'rbl', color: '#003A6F', icon: 'R' },
+            { name: 'Yes Bank', domain: 'yesbank', color: '#00AEEF', icon: 'Y' },
+            { name: 'IDFC Bank', domain: 'idfc', color: '#ED1C24', icon: 'I' },
+            { name: 'Federal Bank', domain: 'federal', color: '#006A4E', icon: 'F' },
+            { name: 'SLC', domain: 'slc', color: '#2E7D32', icon: 'S' },
+            { name: 'Jupiter', domain: 'jupiteraxis', color: '#6A1B9A', icon: 'J' },
+            { name: 'Fi', domain: 'fi', color: '#FF6B6B', icon: 'F' }
+        ];
+
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing event listeners...');
+            
+            // Get DOM elements
+            const paymentTypeBtns = document.querySelectorAll('.payment-type-btn');
+            const formSections = {
+                upi: document.getElementById('upiSection'),
+                phone: document.getElementById('phoneSection'),
+                bank: document.getElementById('bankSection'),
+                aadhaar: document.getElementById('aadhaarSection')
+            };
+            
+            const upiIdInput = document.getElementById('upiId');
+            const autocompleteDropdown = document.getElementById('upiAutocomplete');
+            const validationHint = document.getElementById('validationHint');
+            const phoneNumberInput = document.getElementById('phoneNumber');
+            const phoneValidationHint = document.getElementById('phoneValidationHint');
+            const aadhaarInput = document.getElementById('aadhaarNumber');
+            const generateBtn = document.getElementById('generateBtn');
+            const upiForm = document.getElementById('upiForm');
+
+            console.log('All elements found:', {
+                paymentTypeBtns: paymentTypeBtns.length,
+                formSections: Object.keys(formSections).map(key => formSections[key] ? 'found' : 'not found'),
+                generateBtn: generateBtn ? 'found' : 'not found'
+            });
+
+            // Payment type switching
+            paymentTypeBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    console.log('Payment type clicked:', this.dataset.type);
+                    paymentTypeBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const type = this.dataset.type;
+                    currentPaymentType = type;
+                    
+                    // Hide all sections
+                    Object.values(formSections).forEach(section => {
+                        if (section) section.classList.remove('active');
+                    });
+                    
+                    // Show selected section
+                    if (formSections[type]) {
+                        formSections[type].classList.add('active');
+                    }
+                });
+            });
+
+            // UPI ID autocomplete
+            if (upiIdInput) {
+                upiIdInput.addEventListener('input', function(e) {
+                    const value = e.target.value.trim();
+                    
+                    if (value.includes('@')) {
+                        const [username, domain] = value.split('@');
+                        if (domain.length > 0) {
+                            showAutocomplete(domain);
+                        } else {
+                            hideAutocomplete();
+                        }
+                    } else {
+                        hideAutocomplete();
+                    }
+
+                    // Validation
+                    if (value.length > 0) {
+                        if (validateUPIID(value)) {
+                            validationHint.textContent = '✓ Valid UPI ID format';
+                            validationHint.className = 'validation-hint success show';
+                        } else {
+                            validationHint.textContent = '✗ Invalid UPI ID format (e.g., name@bank)';
+                            validationHint.className = 'validation-hint error show';
+                        }
+                    } else {
+                        validationHint.classList.remove('show');
+                    }
+                });
+            }
+
+            // Phone number validation
+            if (phoneNumberInput) {
+                phoneNumberInput.addEventListener('input', function(e) {
+                    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
+                    
+                    if (e.target.value.length > 0) {
+                        if (e.target.value.length === 10) {
+                            phoneValidationHint.textContent = '✓ Valid phone number';
+                            phoneValidationHint.className = 'validation-hint success show';
+                        } else {
+                            phoneValidationHint.textContent = `✗ Enter 10 digits (${10 - e.target.value.length} more)`;
+                            phoneValidationHint.className = 'validation-hint error show';
+                        }
+                    } else {
+                        phoneValidationHint.classList.remove('show');
+                    }
+                });
+            }
+
+            // Aadhaar number validation
+            if (aadhaarInput) {
+                aadhaarInput.addEventListener('input', function(e) {
+                    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 12);
+                });
+            }
+
+            // Click outside to close autocomplete
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.input-wrapper')) {
+                    hideAutocomplete();
+                }
+            });
+
+            // Generate button click handler - MAIN FIX
+            if (generateBtn) {
+                generateBtn.addEventListener('click', function(e) {
+                    console.log('Generate button clicked!');
+                    e.preventDefault();
+                    generateQRCode();
+                });
+            }
+
+            // Form submit handler (backup)
+            if (upiForm) {
+                upiForm.addEventListener('submit', function(e) {
+                    console.log('Form submitted!');
+                    e.preventDefault();
+                    generateQRCode();
+                });
+            }
+
+            // Download QR Code
+            const downloadBtn = document.getElementById('downloadBtn');
+            if (downloadBtn) {
+                downloadBtn.addEventListener('click', function() {
+                    if (!qrcode) {
+                        console.log('No QR code to download');
+                        return;
+                    }
+
+                    const canvas = document.querySelector('#qrcode canvas');
+                    if (canvas) {
+                        const link = document.createElement('a');
+                        link.download = 'UPI-QR-Code.png';
+                        link.href = canvas.toDataURL();
+                        link.click();
+                        showNotification('QR Code downloaded successfully!', 'success');
+                    }
+                });
+            }
+
+            // Open on Phone
+            const shareBtn = document.getElementById('shareBtn');
+            if (shareBtn) {
+                shareBtn.addEventListener('click', function() {
+                    if (upiUrl) {
+                        window.open(upiUrl, '_blank');
+                        showNotification('Opening UPI app...', 'info');
+                    } else {
+                        showNotification('No QR code to share', 'error');
+                    }
+                });
+            }
+
+            console.log('All event listeners initialized successfully');
+        });
+
+        // Helper functions
+        function showAutocomplete(searchTerm) {
+            const autocompleteDropdown = document.getElementById('upiAutocomplete');
+            if (!autocompleteDropdown) return;
+            
+            const filteredProviders = upiProviders.filter(provider => 
+                provider.domain.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+
+            if (filteredProviders.length > 0) {
+                autocompleteDropdown.innerHTML = filteredProviders.map(provider => `
+                    <div class="autocomplete-item" data-domain="${provider.domain}">
+                        <div class="autocomplete-icon" style="background: ${provider.color}">
+                            ${provider.icon}
+                        </div>
+                        <div class="autocomplete-text">
+                            <div class="autocomplete-name">${provider.name}</div>
+                            <div class="autocomplete-domain">@${provider.domain}</div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                autocompleteDropdown.classList.add('show');
+                
+                // Add click handlers
+                autocompleteDropdown.querySelectorAll('.autocomplete-item').forEach(item => {
+                    item.addEventListener('click', function() {
+                        const upiIdInput = document.getElementById('upiId');
+                        if (upiIdInput) {
+                            const [currentUsername] = upiIdInput.value.split('@');
+                            upiIdInput.value = currentUsername + '@' + this.dataset.domain;
+                            hideAutocomplete();
+                            upiIdInput.focus();
+                        }
+                    });
+                });
+            } else {
+                hideAutocomplete();
+            }
+        }
+
+        function hideAutocomplete() {
+            const autocompleteDropdown = document.getElementById('upiAutocomplete');
+            if (autocompleteDropdown) {
+                autocompleteDropdown.classList.remove('show');
+            }
+        }
+
+        function validateUPIID(upiId) {
+            const upiPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+$/;
+            return upiPattern.test(upiId);
+        }
+
+        // Main QR generation function - DEBUGGED VERSION
+        function generateQRCode() {
+            console.log('generateQRCode called, currentPaymentType:', currentPaymentType);
+            
+            let merchantName, paymentData;
+
+            try {
+                if (currentPaymentType === 'upi') {
+                    merchantName = document.getElementById('merchantName').value.trim();
+                    const upiId = document.getElementById('upiId').value.trim();
+                    
+                    console.log('UPI ID validation:', { merchantName, upiId });
+                    
+                    if (!merchantName || !upiId) {
+                        showNotification('Please fill in all required fields', 'error');
+                        return;
+                    }
+                    
+                    if (!validateUPIID(upiId)) {
+                        showNotification('Please enter a valid UPI ID', 'error');
+                        return;
+                    }
+                    
+                    paymentData = `pa=${upiId}`;
+                } else if (currentPaymentType === 'phone') {
+                    merchantName = document.getElementById('phoneMerchantName').value.trim();
+                    const phoneNumber = document.getElementById('phoneNumber').value.trim();
+                    
+                    console.log('Phone validation:', { merchantName, phoneNumber });
+                    
+                    if (!merchantName || !phoneNumber) {
+                        showNotification('Please fill in all required fields', 'error');
+                        return;
+                    }
+                    
+                    if (phoneNumber.length !== 10) {
+                        showNotification('Please enter a valid 10-digit phone number', 'error');
+                        return;
+                    }
+                    
+                    paymentData = `pa=${phoneNumber}@paytm`;
+                } else if (currentPaymentType === 'bank') {
+                    merchantName = document.getElementById('bankMerchantName').value.trim();
+                    const bankAccount = document.getElementById('bankAccount').value.trim();
+                    const ifscCode = document.getElementById('ifscCode').value.trim();
+                    
+                    console.log('Bank validation:', { merchantName, bankAccount, ifscCode });
+                    
+                    if (!merchantName || !bankAccount || !ifscCode) {
+                        showNotification('Please fill in all required fields', 'error');
+                        return;
+                    }
+                    
+                    paymentData = `pa=${bankAccount}@${ifscCode}`;
+                } else if (currentPaymentType === 'aadhaar') {
+                    merchantName = document.getElementById('aadhaarMerchantName').value.trim();
+                    const aadhaarNumber = document.getElementById('aadhaarNumber').value.trim();
+                    
+                    console.log('Aadhaar validation:', { merchantName, aadhaarNumber });
+                    
+                    if (!merchantName || !aadhaarNumber) {
+                        showNotification('Please fill in all required fields', 'error');
+                        return;
+                    }
+                    
+                    if (aadhaarNumber.length !== 12) {
+                        showNotification('Please enter a valid 12-digit Aadhaar number', 'error');
+                        return;
+                    }
+                    
+                    paymentData = `pa=${aadhaarNumber}@upi`;
+                }
+
+                const amount = document.getElementById('amount').value;
+                const description = document.getElementById('description').value.trim();
+
+                console.log('All validations passed, building URL...');
+
+                // Hide placeholder and show loader
+                const qrPlaceholder = document.getElementById('qrPlaceholder');
+                const qrContainer = document.getElementById('qrcode');
+                const loader = document.getElementById('loader');
+                const successCheck = document.getElementById('successCheck');
+                const downloadBtn = document.getElementById('downloadBtn');
+                const shareBtn = document.getElementById('shareBtn');
+
+                if (qrPlaceholder) qrPlaceholder.style.display = 'none';
+                if (qrContainer) qrContainer.classList.remove('show');
+                if (loader) loader.classList.add('show');
+                if (successCheck) successCheck.classList.remove('show');
+                if (downloadBtn) downloadBtn.classList.remove('show');
+                if (shareBtn) shareBtn.classList.remove('show');
+
+                // Create particle effect
+                createParticleEffect(event);
+
+                // Build UPI URL with standard parameters
+                upiUrl = 'upi://pay?' + paymentData;
+                upiUrl += '&pn=' + encodeURIComponent(merchantName);
+                
+                if (amount) {
+                    upiUrl += '&am=' + amount;
+                } else {
+                    upiUrl += '&am=';
+                }
+                
+                upiUrl += '&mc=0000&mode=02&purpose=00';
+                
+                if (description) {
+                    upiUrl += '&tn=' + encodeURIComponent(description);
+                }
+
+                console.log('Generated UPI URL:', upiUrl);
+
+                // Generate QR code with error handling
+                setTimeout(() => {
+                    try {
+                        if (qrContainer) {
+                            qrContainer.innerHTML = '';
+
+                            // Check if QRCode library is loaded
+                            if (typeof QRCode === 'undefined') {
+                                console.error('QRCode library not loaded');
+                                showNotification('QR Code library not loaded', 'error');
+                                return;
+                            }
+
+                            qrcode = new QRCode(qrContainer, {
+                                text: upiUrl,
+                                width: 280,
+                                height: 280,
+                                colorDark: "#000000",
+                                colorLight: "#ffffff",
+                                correctLevel: QRCode.CorrectLevel.H
+                            });
+
+                            console.log('QR Code generated successfully');
+                        }
+
+                        // Hide loader and show QR
+                        if (loader) loader.classList.remove('show');
+                        if (qrContainer) qrContainer.classList.add('show');
+                        
+                        // Show success animation
+                        setTimeout(() => {
+                            if (successCheck) successCheck.classList.add('show');
+                            setTimeout(() => {
+                                if (successCheck) successCheck.classList.remove('show');
+                            }, 1000);
+                        }, 300);
+
+                        // Show action buttons
+                        if (downloadBtn) downloadBtn.classList.add('show');
+                        if (shareBtn) shareBtn.classList.add('show');
+
+                        showNotification('QR Code generated successfully!', 'success');
+                    } catch (error) {
+                        console.error('Error generating QR code:', error);
+                        if (loader) loader.classList.remove('show');
+                        showNotification('Error generating QR code', 'error');
+                    }
+                }, 1500);
+            } catch (error) {
+                console.error('Error in generateQRCode:', error);
+                showNotification('An error occurred', 'error');
+            }
+        }
+
+        function createParticleEffect(event) {
+            const colors = ['#4caf50', '#66bb6a', '#81c784', '#a5d6a7', '#c8e6c9', '#e8f5e9'];
+            
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = (event ? event.clientX : window.innerWidth / 2) + 'px';
+                particle.style.top = (event ? event.clientY : window.innerHeight / 2) + 'px';
+                particle.style.width = Math.random() * 8 + 4 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.borderRadius = '50%';
+                particle.style.setProperty('--x', (Math.random() - 0.5) * 150 + 'px');
+                particle.style.setProperty('--y', (Math.random() - 0.5) * 150 + 'px');
+                
+                document.body.appendChild(particle);
+                
+                setTimeout(() => particle.remove(), 3000);
+            }
+        }
+
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            if (notification) {
+                notification.textContent = message;
+                notification.className = 'notification ' + type + ' show';
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideOutRight 0.5s ease';
+                    setTimeout(() => {
+                        notification.classList.remove('show');
+                        notification.style.animation = '';
+                    }, 500);
+                }, 3000);
+            }
+        }
+
+        // Add input focus effects
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.glass-input').forEach(input => {
+                input.addEventListener('focus', function() {
+                    if (this.parentElement) {
+                        this.parentElement.style.transform = 'scale(1.02)';
+                    }
+                });
+                
+                input.addEventListener('blur', function() {
+                    if (this.parentElement) {
+                        this.parentElement.style.transform = 'scale(1)';
+                    }
+                });
+            });
+        });
+
+        // Add slide out animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Log initialization
+        console.log('UPI QR Generator initialized successfully');
+    </script>
+</body>
+</html>
