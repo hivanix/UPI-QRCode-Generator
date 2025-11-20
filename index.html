@@ -3,10 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hivanix.in - UPI QR Generator</title>
+ <!-- Primary Meta Tags -->
+    <title>UPI QR Code Generator | Create Payment QR Instantly | Hivanix.in</title>
+    <meta name="title" content="UPI QR Code Generator | Create Payment QR Instantly | Hivanix.in">
+    <meta name="description" content="Generate UPI payment QR codes instantly with Hivanix. Supports UPI ID, Phone Number, Bank Account, Aadhaar, custom amount & notes. Fast, secure & free tool for merchants.">
+    <meta name="keywords" content="upi qr generator, upi qr code, payment qr, qr code generator india, hivanix qr, bharat qr, merchant payment qr, upi id qr, phonepe qr, gpay qr, paytm qr, bank account qr, aadhaar payment qr">
+
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://hivanix.in/upi-qr-generator">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://hivanix.in/upi-qr-generator">
+    <meta property="og:title" content="UPI QR Code Generator | Create Payment QR Instantly | Hivanix.in">
+    <meta property="og:description" content="Create your custom UPI payment QR instantly. Supports UPI ID, mobile number, bank account & Aadhaar payments. Free, fast and secure.">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://hivanix.in/upi-qr-generator">
+    <meta name="twitter:title" content="UPI QR Code Generator | Payment QR Instantly">
+    <meta name="twitter:description" content="Generate UPI payment QR codes instantly for free. Supports UPI ID, phone, bank & Aadhaar.">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" href="https://hivanix.in/favicon.png">
+    <meta name="theme-color" content="#0A84FF">
+
+    <!-- Preconnects for Faster Loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Schema.org JSON-LD (SEO Boost) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org/",
+        "@type": "WebApplication",
+        "name": "UPI QR Code Generator",
+        "url": "https://hivanix.in/upi-qr-generator",
+        "image": "https://hivanix.in/assets/upi-qr-banner.jpg",
+        "author": {
+            "@type": "Organization",
+            "name": "Hivanix.in"
+        },
+        "applicationCategory": "FinTech Application",
+        "description": "Generate UPI payment QR codes instantly. Supports UPI ID, phone number, bank account & Aadhaar.",
+        "operatingSystem": "All",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "INR"
+        }
+    }
+    </script>
+
+    <!-- Security Meta Tags -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+
+    <!-- Disable automatic injection of unwanted app themes -->
+    <meta name="format-detection" content="telephone=no">
     <link rel="icon" type="image/png" href="fevicon.png">
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script defer src="https://analytics.hivanix.in/script.js" data-website-id="c03f2500-025c-44ad-9e29-e7f7f211c1ff"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
@@ -862,181 +926,309 @@
 
     <!-- Main Content -->
     <main class="container">
-        <div class="main-wrapper">
-            <!-- Left Panel - Form -->
-            <div class="glass-card">
-                <div class="card-header">
-                    <h2 class="card-title">Create QR Code</h2>
-                    <p class="card-subtitle">Select payment type and fill details</p>
-                </div>
-
-                <!-- Payment Type Selector -->
-                <div class="payment-type-selector">
-                    <button class="payment-type-btn active" data-type="upi">
-                        <i class="fas fa-at"></i> UPI ID
-                    </button>
-                    <button class="payment-type-btn" data-type="phone">
-                        <i class="fas fa-phone"></i> Phone
-                    </button>
-                    <button class="payment-type-btn" data-type="bank">
-                        <i class="fas fa-university"></i> Bank Account
-                    </button>
-                    <button class="payment-type-btn" data-type="aadhaar">
-                        <i class="fas fa-id-card"></i> Aadhaar
-                    </button>
-                </div>
-
-                <form id="upiForm">
-                    <!-- UPI ID Section -->
-                    <div class="form-section active" id="upiSection">
-                        <div class="form-group">
-                            <label class="form-label">Merchant / Payee Name</label>
-                            <div class="input-wrapper">
-                                <input type="text" id="merchantName" class="glass-input" placeholder="Enter your business name here..." required>
-                                <i class="fas fa-store input-icon"></i>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">UPI Address</label>
-                            <div class="input-wrapper">
-                                <input type="text" id="upiId" class="glass-input" placeholder="Enter your UPI ID here..." required>
-                                <i class="fas fa-at input-icon"></i>
-                                <div class="autocomplete-dropdown" id="upiAutocomplete"></div>
-                            </div>
-                            <div class="validation-hint" id="validationHint"></div>
-                        </div>
-                    </div>
-
-                    <!-- Phone Section -->
-                    <div class="form-section" id="phoneSection">
-                        <div class="form-group">
-                            <label class="form-label">Merchant / Payee Name</label>
-                            <div class="input-wrapper">
-                                <input type="text" id="phoneMerchantName" class="glass-input" placeholder="Enter your business name here..." required>
-                                <i class="fas fa-store input-icon"></i>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Phone Number</label>
-                            <div class="input-wrapper">
-                                <input type="text" id="phoneNumber" class="glass-input" placeholder="Enter your phone number here..." maxlength="10" required>
-                                <i class="fas fa-phone input-icon"></i>
-                            </div>
-                            <div class="validation-hint" id="phoneValidationHint"></div>
-                        </div>
-                    </div>
-
-                    <!-- Bank Account Section -->
-                    <div class="form-section" id="bankSection">
-                        <div class="form-group">
-                            <label class="form-label">Merchant / Payee Name</label>
-                            <div class="input-wrapper">
-                                <input type="text" id="bankMerchantName" class="glass-input" placeholder="Enter your business name here..." required>
-                                <i class="fas fa-store input-icon"></i>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Bank Account Number</label>
-                            <div class="input-wrapper">
-                                <input type="text" id="bankAccount" class="glass-input" placeholder="Enter your Bank Account Number here..." required>
-                                <i class="fas fa-credit-card input-icon"></i>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">IFSC Code</label>
-                            <div class="input-wrapper">
-                                <input type="text" id="ifscCode" class="glass-input" placeholder="Enter your bank's IFSC Code here..." required>
-                                <i class="fas fa-code-branch input-icon"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Aadhaar Section -->
-                    <div class="form-section" id="aadhaarSection">
-                        <div class="form-group">
-                            <label class="form-label">Merchant / Payee Name</label>
-                            <div class="input-wrapper">
-                                <input type="text" id="aadhaarMerchantName" class="glass-input" placeholder="Enter your business name here..." required>
-                                <i class="fas fa-store input-icon"></i>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Aadhaar Number</label>
-                            <div class="input-wrapper">
-                                <input type="text" id="aadhaarNumber" class="glass-input" placeholder="Enter your Aadhaar Number here..." maxlength="12" required>
-                                <i class="fas fa-id-card input-icon"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Common Fields -->
-                    <div class="form-group">
-                        <label class="form-label">Transaction Amount 🇮🇳</label>
-                        <div class="amount-wrapper">
-                            <span class="currency-badge">₹</span>
-                            <input type="number" id="amount" class="glass-input" placeholder="Enter transaction amount here..." min="0" step="0.01">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Description (Notes)</label>
-                        <div class="input-wrapper">
-                            <input type="text" id="description" class="glass-input" placeholder="Enter transaction description here...">
-                            <i class="fas fa-comment-dots input-icon"></i>
-                        </div>
-                    </div>
-
-                    <button type="button" class="btn btn-primary" id="generateBtn">
-                        <i class="fas fa-magic"></i> Generate QR Code
-                    </button>
-                </form>
+    <div class="main-wrapper">
+        <!-- Left Panel - Form -->
+        <div class="glass-card">
+            <div class="card-header">
+                <h2 class="card-title">Create QR Code</h2>
+                <p class="card-subtitle">Select payment type and fill details</p>
             </div>
 
-            <!-- Right Panel - QR Display -->
-            <div class="glass-card">
-                <div class="card-header">
-                    <h2 class="card-title">Your QR Code</h2>
-                    <p class="card-subtitle">Scan or share for payments</p>
+            <!-- Payment Type Selector -->
+            <div class="payment-type-selector">
+                <button 
+                    class="payment-type-btn active" 
+                    data-type="upi"
+                    data-umami-event="payment_type_select"
+                    data-umami-event-type="upi"
+                >
+                    <i class="fas fa-at"></i> UPI ID
+                </button>
+
+                <button 
+                    class="payment-type-btn"
+                    data-type="phone"
+                    data-umami-event="payment_type_select"
+                    data-umami-event-type="phone"
+                >
+                    <i class="fas fa-phone"></i> Phone
+                </button>
+
+                <button 
+                    class="payment-type-btn"
+                    data-type="bank"
+                    data-umami-event="payment_type_select"
+                    data-umami-event-type="bank"
+                >
+                    <i class="fas fa-university"></i> Bank Account
+                </button>
+
+                <button 
+                    class="payment-type-btn"
+                    data-type="aadhaar"
+                    data-umami-event="payment_type_select"
+                    data-umami-event-type="aadhaar"
+                >
+                    <i class="fas fa-id-card"></i> Aadhaar
+                </button>
+            </div>
+
+            <form id="upiForm">
+
+                <!-- UPI SECTION -->
+                <div class="form-section active" id="upiSection">
+                    <div class="form-group">
+                        <label class="form-label">Merchant / Payee Name</label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="text"
+                                id="merchantName"
+                                class="glass-input"
+                                placeholder="Enter your business name here..."
+                                required
+                                data-umami-event="input_focus"
+                                data-umami-event-field="merchantName_upi"
+                            >
+                            <i class="fas fa-store input-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">UPI Address</label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="text"
+                                id="upiId"
+                                class="glass-input"
+                                placeholder="Enter your UPI ID here..."
+                                required
+                                data-umami-event="input_focus"
+                                data-umami-event-field="upiId"
+                            >
+                            <i class="fas fa-at input-icon"></i>
+                            <div class="autocomplete-dropdown" id="upiAutocomplete"></div>
+                        </div>
+                        <div class="validation-hint" id="validationHint"></div>
+                    </div>
                 </div>
 
-                <div class="qr-container">
-                    <div class="qr-placeholder" id="qrPlaceholder">
-                        <div class="qr-icon">
-                            <i class="fas fa-qrcode"></i>
+                <!-- PHONE SECTION -->
+                <div class="form-section" id="phoneSection">
+                    <div class="form-group">
+                        <label class="form-label">Merchant / Payee Name</label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="text"
+                                id="phoneMerchantName"
+                                class="glass-input"
+                                placeholder="Enter your business name here..."
+                                required
+                                data-umami-event="input_focus"
+                                data-umami-event-field="merchantName_phone"
+                            >
+                            <i class="fas fa-store input-icon"></i>
                         </div>
-                        <h3>Ready to Generate</h3>
-                        <p>Your payment QR will appear here</p>
                     </div>
 
-                    <div class="loader" id="loader"></div>
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="text"
+                                id="phoneNumber"
+                                class="glass-input"
+                                placeholder="Enter your phone number here..."
+                                maxlength="10"
+                                required
+                                data-umami-event="input_focus"
+                                data-umami-event-field="phoneNumber"
+                            >
+                            <i class="fas fa-phone input-icon"></i>
+                        </div>
+                        <div class="validation-hint" id="phoneValidationHint"></div>
+                    </div>
+                </div>
 
-                    <div id="qrcode"></div>
-
-                    <div class="success-check" id="successCheck">
-                        <div class="success-icon">
-                            <i class="fas fa-check"></i>
+                <!-- BANK SECTION -->
+                <div class="form-section" id="bankSection">
+                    <div class="form-group">
+                        <label class="form-label">Merchant / Payee Name</label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="text"
+                                id="bankMerchantName"
+                                class="glass-input"
+                                placeholder="Enter your business name here..."
+                                required
+                                data-umami-event="input_focus"
+                                data-umami-event-field="merchantName_bank"
+                            >
+                            <i class="fas fa-store input-icon"></i>
                         </div>
                     </div>
 
-                    <div class="action-buttons">
-                        <button class="action-btn download" id="downloadBtn">
-                            <i class="fas fa-download"></i>
-                            <span>Download</span>
-                        </button>
-                        <button class="action-btn share" id="shareBtn">
-                            <i class="fas fa-mobile-alt"></i>
-                            <span>Open on Phone</span>
-                        </button>
+                    <div class="form-group">
+                        <label class="form-label">Bank Account Number</label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="text"
+                                id="bankAccount"
+                                class="glass-input"
+                                placeholder="Enter your Bank Account Number here..."
+                                required
+                                data-umami-event="input_focus"
+                                data-umami-event-field="bankAccount"
+                            >
+                            <i class="fas fa-credit-card input-icon"></i>
+                        </div>
                     </div>
+
+                    <div class="form-group">
+                        <label class="form-label">IFSC Code</label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="text"
+                                id="ifscCode"
+                                class="glass-input"
+                                placeholder="Enter your bank's IFSC Code here..."
+                                required
+                                data-umami-event="input_focus"
+                                data-umami-event-field="ifscCode"
+                            >
+                            <i class="fas fa-code-branch input-icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AADHAAR SECTION -->
+                <div class="form-section" id="aadhaarSection">
+                    <div class="form-group">
+                        <label class="form-label">Merchant / Payee Name</label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="text"
+                                id="aadhaarMerchantName"
+                                class="glass-input"
+                                placeholder="Enter your business name here..."
+                                required
+                                data-umami-event="input_focus"
+                                data-umami-event-field="merchantName_aadhaar"
+                            >
+                            <i class="fas fa-store input-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Aadhaar Number</label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="text"
+                                id="aadhaarNumber"
+                                class="glass-input"
+                                placeholder="Enter your Aadhaar Number here..."
+                                maxlength="12"
+                                required
+                                data-umami-event="input_focus"
+                                data-umami-event-field="aadhaarNumber"
+                            >
+                            <i class="fas fa-id-card input-icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COMMON FIELDS -->
+                <div class="form-group">
+                    <label class="form-label">Transaction Amount 🇮🇳</label>
+                    <div class="amount-wrapper">
+                        <span class="currency-badge">₹</span>
+                        <input 
+                            type="number"
+                            id="amount"
+                            class="glass-input"
+                            placeholder="Enter transaction amount here..."
+                            min="0"
+                            step="0.01"
+                            data-umami-event="input_focus"
+                            data-umami-event-field="amount"
+                        >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description (Notes)</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="text"
+                            id="description"
+                            class="glass-input"
+                            placeholder="Enter transaction description here..."
+                            data-umami-event="input_focus"
+                            data-umami-event-field="description"
+                        >
+                        <i class="fas fa-comment-dots input-icon"></i>
+                    </div>
+                </div>
+
+                <button 
+                    type="button"
+                    class="btn btn-primary"
+                    id="generateBtn"
+                    data-umami-event="generate_qr_click"
+                >
+                    <i class="fas fa-magic"></i> Generate QR Code
+                </button>
+            </form>
+        </div>
+
+        <!-- Right Panel - QR Display -->
+        <div class="glass-card">
+            <div class="card-header">
+                <h2 class="card-title">Your QR Code</h2>
+                <p class="card-subtitle">Scan or share for payments</p>
+            </div>
+
+            <div class="qr-container">
+                <div class="qr-placeholder" id="qrPlaceholder">
+                    <div class="qr-icon">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <h3>Ready to Generate</h3>
+                    <p>Your payment QR will appear here</p>
+                </div>
+
+                <div class="loader" id="loader"></div>
+                <div id="qrcode"></div>
+
+                <div class="success-check" id="successCheck">
+                    <div class="success-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button 
+                        class="action-btn download"
+                        id="downloadBtn"
+                        data-umami-event="download_qr"
+                    >
+                        <i class="fas fa-download"></i>
+                        <span>Download</span>
+                    </button>
+
+                    <button 
+                        class="action-btn share"
+                        id="shareBtn"
+                        data-umami-event="share_qr"
+                    >
+                        <i class="fas fa-mobile-alt"></i>
+                        <span>Open on Phone</span>
+                    </button>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
+</main>
+
 
     <!-- Footer -->
     <footer class="footer">
